@@ -1,0 +1,9 @@
+{
+  "isbn" : "1234",
+  "title": "Book Title 1",
+  "author": "Author Test",
+  "publisher": "PUBS1",
+  "edition": 1,
+  "addedDate": "2019-01-29",
+  "updatedDate": "2019-01-29"
+}
