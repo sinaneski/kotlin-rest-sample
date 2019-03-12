@@ -1,13 +1,17 @@
 package com.swarts.kts.book.controller
 
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.swarts.kts.book.dto.BookRequest
 import com.swarts.kts.book.dto.BookResponse
+import com.swarts.kts.book.excetption.BookAlreadyExistException
 import com.swarts.kts.book.service.BookService
 import com.swarts.kts.book.transformer.objectMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.Mockito.doThrow
+import org.mockito.Mockito.verify
 import org.springframework.core.io.ClassPathResource
 
 internal class BookControllerTest {
@@ -46,10 +50,40 @@ internal class BookControllerTest {
         assertThat(bookResponse).isEqualTo(book)
     }
 
+    @Test
+    fun `given book is not exist in the db when add a new book then successfully store the book` ()  {
+
+        val book = loadBookRequest()
+
+        Mockito.doNothing().`when`(service).saveBook(book)
+
+        controller.saveBook(book)
+
+        verify(service).saveBook(book)
+    }
+
+    @Test(expected = BookAlreadyExistException::class)
+    fun `given book is exist in the db when add a new book then throw a book already exist exception` ()  {
+
+        val book = loadBookRequest()
+
+        doThrow(BookAlreadyExistException("Book already exist: $book")).`when`(service).saveBook(book)
+
+        controller.saveBook(book)
+
+        verify(service).saveBook(book)
+    }
 
     private fun loadBookResponseList() : List<BookResponse> {
 
         val objectMapper = objectMapper()
         return objectMapper.readValue(ClassPathResource("book-response-list.json").inputStream)
     }
+
+    private fun loadBookRequest() : BookRequest {
+
+        val objectMapper = objectMapper()
+        return objectMapper.readValue(ClassPathResource("book-request.json").inputStream)
+    }
+
 }

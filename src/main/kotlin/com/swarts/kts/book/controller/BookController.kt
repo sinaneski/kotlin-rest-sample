@@ -1,10 +1,10 @@
 package com.swarts.kts.book.controller
 
+import com.swarts.kts.book.dto.BookRequest
 import com.swarts.kts.book.dto.BookResponse
 import com.swarts.kts.book.service.BookService
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.*
 
 @RestController
 class BookController(private val service: BookService) {
@@ -19,6 +19,13 @@ class BookController(private val service: BookService) {
     fun getBooks(@PathVariable(name = "isbn") isbn: String) : BookResponse {
 
         return service.getBookByIsbn(isbn)
+    }
+
+    @PostMapping(value = ["books"])
+    @ResponseStatus(HttpStatus.CREATED)
+    fun saveBook(@RequestBody book: BookRequest) {
+
+        service.saveBook(book)
     }
 
 }

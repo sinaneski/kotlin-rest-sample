@@ -1,6 +1,8 @@
 package com.swarts.kts.book.service
 
+import com.swarts.kts.book.dto.BookRequest
 import com.swarts.kts.book.dto.BookResponse
+import com.swarts.kts.book.excetption.BookAlreadyExistException
 import com.swarts.kts.book.excetption.BookNotFoundException
 import com.swarts.kts.book.repository.BookRepository
 import com.swarts.kts.book.transformer.BookTransformer
@@ -27,4 +29,15 @@ class BookService (private val repository: BookRepository) {
 
         return transformer.transform(entity.get())
     }
+
+    @Throws(BookAlreadyExistException::class)
+    fun saveBook(book: BookRequest) {
+
+        val entity = repository.findByIsbn(book.isbn)
+
+        if(entity.isPresent) { throw BookAlreadyExistException("Book already exist: $book") }
+
+        repository.save(transformer.transform(book))
+    }
+
 }

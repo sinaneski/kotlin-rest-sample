@@ -1,7 +1,9 @@
 package com.swarts.kts.book.service
 
+import com.swarts.kts.book.dto.BookRequest
 import com.swarts.kts.book.dto.BookResponse
 import com.swarts.kts.book.entity.BookEntity
+import com.swarts.kts.book.excetption.BookAlreadyExistException
 import com.swarts.kts.book.repository.BookRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
@@ -47,6 +49,45 @@ internal class BookServiceTest {
         val bookResponse = service.getBookByIsbn(isbn);
 
         assertThat(bookResponse).isEqualTo(expectedBookResponse)
+    }
+
+    @Test
+    fun `given book is not exist in the db when add a new book then successfully store the book` ()  {
+
+        val book = buildBookRequest()
+        val bookEntity = buildBookEntity()
+
+        Mockito.`when`(repository.save(bookEntity)).thenReturn(bookEntity)
+
+        service.saveBook(book)
+
+        Mockito.verify(repository).save(bookEntity)
+    }
+
+
+    @Test(expected = BookAlreadyExistException::class)
+    fun `given book is exist in the db when add a book then throw already exist exception` ()  {
+
+        val bookRequest = buildBookRequest()
+        val bookEntity = buildBookEntity()
+
+        Mockito.`when`(repository.findByIsbn(bookRequest.isbn)).thenReturn(Optional.of(bookEntity))
+        Mockito.`when`(repository.save(bookEntity)).thenReturn(bookEntity)
+
+        service.saveBook(bookRequest)
+
+        Mockito.verify(repository).save(bookEntity)
+    }
+
+    private fun buildBookRequest() : BookRequest {
+        return BookRequest (
+                "1234",
+                "Book Title 1",
+                "Author Test",
+                "PUBS1",
+                1,
+                LocalDate.parse("2019-01-29")
+        )
     }
 
     private fun buildBookResponse() : BookResponse {

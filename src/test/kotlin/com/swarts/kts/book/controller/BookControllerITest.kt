@@ -1,19 +1,23 @@
 package com.swarts.kts.book.controller
 
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.swarts.kts.book.dto.BookRequest
 import com.swarts.kts.book.dto.BookResponse
 import com.swarts.kts.book.service.BookService
 import com.swarts.kts.book.transformer.objectMapper
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
+import org.mockito.Mockito.doNothing
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.core.io.ClassPathResource
+import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -53,6 +57,19 @@ internal class BookControllerITest {
                 .andExpect(content().json(objectMapper().writeValueAsString(bookResponse)))
     }
 
+    @Test
+    fun `given the book is not exist in database when add a book then add book` ()  {
+
+        val bookRequest = loadBookRequest()
+
+        doNothing().`when`(service).saveBook(bookRequest)
+
+        mockMvc.perform(post("/books")
+                .content(objectMapper().writeValueAsString(bookRequest))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isCreated)
+    }
 
     private fun loadBookResponse() : List<BookResponse> {
 
@@ -60,4 +77,9 @@ internal class BookControllerITest {
         return objectMapper.readValue(ClassPathResource("book-response-list.json").inputStream)
     }
 
+    private fun loadBookRequest() : BookRequest {
+
+        val objectMapper = objectMapper()
+        return objectMapper.readValue(ClassPathResource("book-request.json").inputStream)
+    }
 }

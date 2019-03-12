@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: $(env.APP_NAME:book-entity-service)
+  h2:
+    console:
+      enabled: true
+      path: /h2
+  datasource:
+    url: jdbc:h2:file:~/testdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
