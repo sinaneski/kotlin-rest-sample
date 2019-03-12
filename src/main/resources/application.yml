@@ -10,3 +10,8 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+
+
+server:
+  port: ${env.SERVICE_PORT:8080}
+  contextPath: /book-entity-service
