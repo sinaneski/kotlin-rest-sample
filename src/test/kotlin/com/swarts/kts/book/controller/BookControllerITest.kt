@@ -40,6 +40,20 @@ internal class BookControllerITest {
 
     }
 
+    @Test
+    fun `given books is exist when book requested with isbn then return the book` ()  {
+
+        val isbn = "1234"
+        val bookResponse = loadBookResponse().first { it.isbn == isbn }
+
+        Mockito.`when`(service.getBookByIsbn(isbn)).thenReturn(bookResponse)
+
+        mockMvc.perform(get("/books/1234"))
+                .andExpect(status().isOk)
+                .andExpect(content().json(objectMapper().writeValueAsString(bookResponse)))
+    }
+
+
     private fun loadBookResponse() : List<BookResponse> {
 
         val objectMapper = objectMapper()

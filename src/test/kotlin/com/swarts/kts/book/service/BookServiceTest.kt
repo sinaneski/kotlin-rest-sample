@@ -8,6 +8,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
 import java.time.LocalDate
+import java.util.*
 
 internal class BookServiceTest {
 
@@ -30,6 +31,20 @@ internal class BookServiceTest {
         Mockito.`when`(repository.findAll()).thenReturn(bookEntities)
 
         val bookResponse = service.getBooks();
+
+        assertThat(bookResponse).isEqualTo(expectedBookResponse)
+    }
+
+    @Test
+    fun `given books exist when book requested with isbn then return the book` ()  {
+
+        val isbn = "1234"
+        val bookEntity = buildBookEntity()
+        val expectedBookResponse = buildBookResponse()
+
+        Mockito.`when`(repository.findByIsbn(isbn)).thenReturn(Optional.of(bookEntity))
+
+        val bookResponse = service.getBookByIsbn(isbn);
 
         assertThat(bookResponse).isEqualTo(expectedBookResponse)
     }

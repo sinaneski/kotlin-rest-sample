@@ -43,4 +43,31 @@ internal class BookRepositoryTest {
                 LocalDate.parse("2019-01-29")
         )
     }
+
+    @Test
+    fun `given book exist in database when request with isbn then return the correct record`() {
+        val expectedBookEntity = bookEntity()
+        entityManager!!.persist(expectedBookEntity)
+
+        val entity = repository!!.findByIsbn("1234")
+
+        assertThat(entity.get()).isEqualTo(expectedBookEntity)
+    }
+
+    @Test
+    fun `given book not exist in database when request with isbn then return null`() {
+
+        val entity = repository!!.findByIsbn("1234")
+
+        assertThat(entity.isPresent).isFalse()
+    }
+
+    @Test
+    fun `given no book exist in database when request all then return empty`() {
+
+        val entity = repository!!.findAll()
+
+        assertThat(entity).isEmpty()
+    }
+
 }

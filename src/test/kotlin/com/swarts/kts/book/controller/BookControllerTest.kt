@@ -33,6 +33,20 @@ internal class BookControllerTest {
         assertThat(bookResponse).isEqualTo(books)
     }
 
+    @Test
+    fun `given book is exist when book requested with isbn then return the book` ()  {
+
+        val isbn = "1234"
+        val book = loadBookResponseList().first { it.isbn == isbn }
+
+        Mockito.`when`(service.getBookByIsbn(isbn)).thenReturn(book)
+
+        val bookResponse = controller.getBooks(isbn);
+
+        assertThat(bookResponse).isEqualTo(book)
+    }
+
+
     private fun loadBookResponseList() : List<BookResponse> {
 
         val objectMapper = objectMapper()
