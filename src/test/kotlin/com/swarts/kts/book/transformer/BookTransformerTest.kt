@@ -1,5 +1,6 @@
 package com.swarts.kts.book.transformer
 
+import com.swarts.kts.book.dto.BookRequest
 import com.swarts.kts.book.dto.BookResponse
 import com.swarts.kts.book.entity.BookEntity
 import org.assertj.core.api.Assertions.assertThat
@@ -16,6 +17,28 @@ internal class BookTransformerTest {
         val transformer = BookTransformer()
 
         assertThat(transformer.transform(entity)).isEqualTo(response)
+    }
+
+    @Test
+    fun `given request when transform to entity than return valid entity`() {
+
+        val request = buildBookRequest()
+        val entity = buildBookEntity()
+        val transformer = BookTransformer()
+
+        assertThat(transformer.transform(request)).isEqualTo(entity)
+    }
+
+
+    private fun buildBookRequest() : BookRequest {
+        return BookRequest (
+                "1234",
+                "Book Title 1",
+                "Author Test",
+                "PUBS1",
+                1,
+                LocalDate.parse("2019-01-29")
+        )
     }
 
     private fun buildBookResponse() : BookResponse {
