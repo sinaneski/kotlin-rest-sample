@@ -71,6 +71,20 @@ The endpoint of the application as given in the following table.
 - contextPath is given as `book-entity-service` in the `application.yml` configuration file.
 - isbn: The ISBN number of a book
 
+* Sample Book Request
+```json
+
+{
+  "isbn" : "1234",
+  "title": "Book Title 1",
+  "author": "Author Test",
+  "publisher": "PUBS1",
+  "edition": 1,
+  "operationDate": "2019-01-29"
+}
+
+```
+
 ### Response 
 
 |Http Status | Description         | Body                     | more Information   |
@@ -81,6 +95,19 @@ The endpoint of the application as given in the following table.
 |404         | UnprocessableEntity | {error}                  | BookAlreadyExist   |
 |500         | InternalServerError | {error}                  | TechnicalFailure   |
 
+* Sample Book Response
+```json
+
+{
+  "isbn" : "1234",
+  "title": "Book Title 1",
+  "author": "Author Test",
+  "publisher": "PUBS1",
+  "edition": 1,
+  "addedDate": "2019-01-29",
+  "updatedDate": "2019-01-29"
+}
+```
 ## Database
  
  |Column Name      | Type                | Not Null |
