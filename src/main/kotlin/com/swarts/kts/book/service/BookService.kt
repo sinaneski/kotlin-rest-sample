@@ -52,4 +52,14 @@ class BookService (private val repository: BookRepository) {
 
         repository.save(transformer.transform(book, entity))
     }
+
+    @Throws(BookNotFoundException::class)
+    fun deleteBook(isbn: String) {
+
+        val entity = repository.findByIsbn(isbn)
+
+        if(!entity.isPresent) { throw BookNotFoundException("No book found for $isbn") }
+
+        repository.deleteByIsbn(isbn)
+    }
 }

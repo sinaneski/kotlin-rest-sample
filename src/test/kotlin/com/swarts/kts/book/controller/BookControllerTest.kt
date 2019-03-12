@@ -117,6 +117,30 @@ internal class BookControllerTest {
     }
 
 
+    @Test
+    fun `given the book exist in database when request delete then delete it successfully`() {
+
+        val isbn = "1234"
+
+        doNothing().`when`(service).deleteBook(isbn)
+
+        controller.deleteBook(isbn)
+
+        verify(service).deleteBook(isbn)
+    }
+
+    @Test(expected = BookNotFoundException::class)
+    fun `given the book not exist in database when request delete then throw not found exception`() {
+
+        val isbn = "1234"
+
+        doThrow(BookNotFoundException("Book not found: ${isbn}")).`when`(service).deleteBook(isbn)
+
+        controller.deleteBook(isbn)
+
+        verify(service).deleteBook(isbn)
+    }
+
     private fun loadBookResponseList() : List<BookResponse> {
 
         val objectMapper = objectMapper()

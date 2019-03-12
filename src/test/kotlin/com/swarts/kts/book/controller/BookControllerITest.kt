@@ -86,6 +86,19 @@ internal class BookControllerITest {
                 .andExpect(status().isOk)
     }
 
+
+    @Test
+    fun `given the book is exist in database when delete a book then delete the  book` ()  {
+
+        val isbn = "1234"
+
+        doNothing().`when`(service).deleteBook(isbn)
+
+        mockMvc.perform(delete("/books/$isbn"))
+                .andExpect(status().isOk)
+    }
+
+
     private fun loadBookResponse() : List<BookResponse> {
 
         val objectMapper = objectMapper()

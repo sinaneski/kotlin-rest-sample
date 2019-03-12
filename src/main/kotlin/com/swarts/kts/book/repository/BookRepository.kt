@@ -8,4 +8,5 @@ import java.util.*
 @Repository
 interface BookRepository : CrudRepository<BookEntity, Long> {
     fun findByIsbn(isbn: String) : Optional<BookEntity>
+    fun deleteByIsbn(isbn: String)
 }

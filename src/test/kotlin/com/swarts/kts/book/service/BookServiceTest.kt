@@ -110,6 +110,32 @@ internal class BookServiceTest {
         Mockito.verify(repository).save(bookEntity)
     }
 
+    @Test
+    fun `given a book exist in database when request delete then delete it successfully`() {
+
+        val isbn = "1234"
+        val bookEntity = buildBookEntity()
+
+        Mockito.`when`(repository.findByIsbn(isbn)).thenReturn(Optional.of(bookEntity))
+        Mockito.doNothing().`when`(repository).deleteByIsbn(isbn)
+
+        service.deleteBook(isbn)
+
+        Mockito.verify(repository).deleteByIsbn(isbn)
+    }
+
+    @Test(expected = BookNotFoundException::class)
+    fun `given book is not exist in the db when delete a book then book not found exception` ()  {
+
+        val isbn = "1234"
+
+        Mockito.`when`(repository.findByIsbn(isbn)).thenReturn(Optional.empty())
+
+        service.deleteBook(isbn)
+
+        Mockito.verify(repository).deleteByIsbn(isbn)
+    }
+
     private fun buildBookRequest() : BookRequest {
         return BookRequest (
                 "1234",

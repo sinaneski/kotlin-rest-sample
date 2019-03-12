@@ -70,4 +70,17 @@ internal class BookRepositoryTest {
         assertThat(entity).isEmpty()
     }
 
+    @Test
+    fun `given a book exist in database when request delete then delete it successfully`() {
+
+        val expectedBookEntity = bookEntity()
+
+        entityManager!!.persist(expectedBookEntity)
+
+        repository!!.deleteByIsbn("1234")
+
+        val entity = repository.findByIsbn("1234")
+
+        assertThat(entity.isPresent).isFalse()
+    }
 }

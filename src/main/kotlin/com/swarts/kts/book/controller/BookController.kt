@@ -58,4 +58,16 @@ class BookController(private val service: BookService) {
 
         log.info { "Book successfully updated." }
     }
+
+    @DeleteMapping(value = ["books/{isbn}"])
+    fun deleteBook(@PathVariable(name = "isbn") isbn: String) {
+
+        log.info { "Request to delete book with isbn = $isbn" }
+
+        service.deleteBook(isbn)
+
+        log.info { "Book successfully deleted." }
+
+    }
+
 }
