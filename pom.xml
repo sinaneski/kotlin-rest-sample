@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.swarts.kts</groupId>
 	<artifactId>book-entity-service</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0-SNAPSHOT</version>
 	<name>book-entity-service</name>
 	<description>Kotlin spring boot sample project</description>
 
