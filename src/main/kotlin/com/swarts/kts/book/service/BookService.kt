@@ -2,6 +2,7 @@ package com.swarts.kts.book.service
 
 import com.swarts.kts.book.dto.BookRequest
 import com.swarts.kts.book.dto.BookResponse
+import com.swarts.kts.book.excetption.BadRequestException
 import com.swarts.kts.book.excetption.BookAlreadyExistException
 import com.swarts.kts.book.excetption.BookNotFoundException
 import com.swarts.kts.book.repository.BookRepository
@@ -40,4 +41,15 @@ class BookService (private val repository: BookRepository) {
         repository.save(transformer.transform(book))
     }
 
+    @Throws(BookNotFoundException::class, BadRequestException::class)
+    fun updateBook(isbn: String, book: BookRequest) {
+
+        if(isbn != book.isbn) { throw BadRequestException("The isbn = $isbn and book information (book.isbn = ${book.isbn}) is not match") }
+
+        val entity = repository.findByIsbn(isbn)
+
+        if(!entity.isPresent) { throw BookNotFoundException("No book found for ${isbn}") }
+
+        repository.save(transformer.transform(book, entity))
+    }
 }

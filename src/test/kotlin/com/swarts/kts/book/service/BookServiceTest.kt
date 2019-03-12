@@ -4,6 +4,7 @@ import com.swarts.kts.book.dto.BookRequest
 import com.swarts.kts.book.dto.BookResponse
 import com.swarts.kts.book.entity.BookEntity
 import com.swarts.kts.book.excetption.BookAlreadyExistException
+import com.swarts.kts.book.excetption.BookNotFoundException
 import com.swarts.kts.book.repository.BookRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
@@ -75,6 +76,36 @@ internal class BookServiceTest {
         Mockito.`when`(repository.save(bookEntity)).thenReturn(bookEntity)
 
         service.saveBook(bookRequest)
+
+        Mockito.verify(repository).save(bookEntity)
+    }
+
+
+    @Test
+    fun `given book is exist in the db when update a book then update the record` ()  {
+
+        val bookRequest = buildBookRequest()
+        val bookEntity = buildBookEntity()
+        val isbn = bookRequest.isbn
+
+        Mockito.`when`(repository.findByIsbn(isbn)).thenReturn(Optional.of(bookEntity))
+        Mockito.`when`(repository.save(bookEntity)).thenReturn(bookEntity)
+
+        service.updateBook(isbn, bookRequest)
+
+        Mockito.verify(repository).save(bookEntity)
+    }
+
+    @Test(expected = BookNotFoundException::class)
+    fun `given book is not exist in the db when update a book then throw book not found exception` ()  {
+
+        val bookRequest = buildBookRequest()
+        val bookEntity = buildBookEntity()
+        val isbn = bookRequest.isbn
+
+        Mockito.`when`(repository.findByIsbn(isbn)).thenReturn(Optional.empty())
+
+        service.updateBook(isbn, bookRequest)
 
         Mockito.verify(repository).save(bookEntity)
     }

@@ -47,4 +47,15 @@ class BookController(private val service: BookService) {
         log.info { "Book successfully added." }
     }
 
+    @PutMapping(value = ["books/{isbn}"])
+    fun updateBook(
+            @PathVariable(name = "isbn") isbn: String,
+            @RequestBody book: BookRequest) {
+
+        log.info { "Request to add book = $book" }
+
+        service.updateBook(isbn, book)
+
+        log.info { "Book successfully updated." }
+    }
 }

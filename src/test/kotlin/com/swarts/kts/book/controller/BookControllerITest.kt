@@ -16,8 +16,7 @@ import org.springframework.core.io.ClassPathResource
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
@@ -69,6 +68,22 @@ internal class BookControllerITest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .accept(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isCreated)
+    }
+
+    @Test
+    fun `given the book is exist in database when update a book then update the  book` ()  {
+
+        val bookRequest = loadBookRequest()
+        val isbn = bookRequest.isbn
+
+
+        doNothing().`when`(service).updateBook(isbn, bookRequest)
+
+        mockMvc.perform(put("/books/$isbn")
+                .content(objectMapper().writeValueAsString(bookRequest))
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk)
     }
 
     private fun loadBookResponse() : List<BookResponse> {

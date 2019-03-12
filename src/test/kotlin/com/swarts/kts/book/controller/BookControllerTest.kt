@@ -3,15 +3,16 @@ package com.swarts.kts.book.controller
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.swarts.kts.book.dto.BookRequest
 import com.swarts.kts.book.dto.BookResponse
+import com.swarts.kts.book.excetption.BadRequestException
 import com.swarts.kts.book.excetption.BookAlreadyExistException
+import com.swarts.kts.book.excetption.BookNotFoundException
 import com.swarts.kts.book.service.BookService
 import com.swarts.kts.book.transformer.objectMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
-import org.mockito.Mockito.doThrow
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
 import org.springframework.core.io.ClassPathResource
 
 internal class BookControllerTest {
@@ -73,6 +74,48 @@ internal class BookControllerTest {
 
         verify(service).saveBook(book)
     }
+
+
+    @Test
+    fun `given book is exist in the db when update a book then update the record` ()  {
+
+        val book = loadBookRequest()
+        val isbn = book.isbn
+
+        doNothing().`when`(service).updateBook(isbn, book)
+
+        controller.updateBook(isbn, book)
+
+        verify(service).updateBook(isbn, book)
+    }
+
+    @Test(expected = BookNotFoundException::class)
+    fun `given book is not exist in the db when update a book then ex the record` ()  {
+
+        val book = loadBookRequest()
+        val isbn = book.isbn
+
+        doThrow(BookNotFoundException("Book not found: ${book.isbn}")).`when`(service).updateBook(isbn, book)
+
+        controller.updateBook(isbn, book)
+
+        verify(service).updateBook(isbn, book)
+    }
+
+    @Test(expected = BadRequestException::class)
+    fun `given book is not match with the isbn in the db when update a book then throw bad request exception` ()  {
+
+        val isbn = "5678"
+
+        val book = loadBookRequest()
+
+        doThrow(BadRequestException("Isbn mismatch isbn = $isbn and book.isbn = ${book.isbn}")).`when`(service).updateBook(isbn, book)
+
+        controller.updateBook(isbn, book)
+
+        verify(service).updateBook(isbn, book)
+    }
+
 
     private fun loadBookResponseList() : List<BookResponse> {
 
