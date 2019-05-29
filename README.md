@@ -1,4 +1,4 @@
-# Kotlin Rest Sample
+# Kotlin Rest Sample [![Build Status](https://travis-ci.org/sinaneski/kotlin-rest-sample.svg?branch=master)](https://travis-ci.org/sinaneski/kotlin-rest-sample)
 
 `book-entity-service` is a sample REST microservice application.
 
